@@ -1,8 +1,30 @@
-# Edit following two lines to set component requirements (see docs)
-set(COMPONENT_REQUIRES )
-set(COMPONENT_PRIV_REQUIRES )
+set(srcs
+    main.c
+    wifi_connect.c
+    https_req.c
+    tts_report.c
+    )
 
-set(COMPONENT_SRCS "main.c")
-set(COMPONENT_ADD_INCLUDEDIRS "")
+set(include_dirs
+    include
+    )
 
-register_component()
+idf_component_register(SRCS ${srcs}
+                       INCLUDE_DIRS ${include_dirs}
+                       EMBED_TXTFILES server_root_cert.pem)
+
+add_definitions(-w)
+
+set(voice_data_image ${PROJECT_DIR}/../esp-box/components/esp-sr/esp-tts/esp_tts_chinese/esp_tts_voice_data_xiaole.dat)
+add_custom_target(voice_data ALL DEPENDS ${voice_data_image})
+add_dependencies(flash voice_data)
+
+partition_table_get_partition_info(size "--partition-name voice_data" "size")
+partition_table_get_partition_info(offset "--partition-name voice_data" "offset")
+
+if("${size}" AND "${offset}")
+    esptool_py_flash_to_partition(flash "voice_data" "${voice_data_image}")
+else()
+    set(message "Failed to find model in partition table file"
+        "Please add a line(Name=voice_data, Type=data, Size=3890K) to the partition file.")
+endif()

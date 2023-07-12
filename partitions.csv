@@ -1,0 +1,4 @@
+# Name,  Type, SubType, Offset,  Size
+nvs,data,nvs,0x9000,0x4000
+factory, app,  factory, 0x010000, 4M
+voice_data, data,  fat, 0x410000, 3890K 
