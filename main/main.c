@@ -1,27 +1,24 @@
 #include "nvs_flash.h"
 #include "bsp_board.h"
 #include "esp_wifi.h"
-#include "esp_event.h"
 // #include "bsp_lcd.h"
 // #include "lv_demo.h"
 // #include "lv_port.h"
 // #include "lvgl.h"
 
+/* 3rdparty lib */
 #include "cJSON.h"
 
 /* User lib */
 #include "wifi_connect.h"
 #include "https_req.h"
 #include "tts_report.h"
-
-extern char *buf;
-// void json_parse(char *json)
-// {
-
-// }
+#include "json_parser.h"
 
 void app_main(void)
 {
+    char *bfans;
+
     ESP_ERROR_CHECK(bsp_board_init());
     ESP_ERROR_CHECK(bsp_board_power_ctrl(POWER_MODULE_AUDIO, true));
 
@@ -33,6 +30,8 @@ void app_main(void)
         ret = nvs_flash_init();
     }
     ESP_ERROR_CHECK(ret);
+
+    tts_init();
 
     // LVGL init
     // ESP_ERROR_CHECK(lv_port_init());
@@ -51,5 +50,10 @@ void app_main(void)
     /*
      * TTS
      */
-    tts_report();
+    char *prompt1 = "欢迎使用乐鑫语音合成";
+    tts_report(prompt1);
+
+    char *json_buf = "{\"code\":0,\"message\":\"0\",\"ttl\":1,\"data\":{\"mid\":42602419,\"following\":246,\"whisper\":0,\"black\":0,\"follower\":69}}\",\"message\":\"0\",\"ttl\":1,\"data\":{\"mid\":42602419,\"following\":246,\"whisper\":0,\"black\":0,\"follower\":69}}\";\"data\":{\"mid\":42602419,\"following\":246,\"whisper\":0,\"black\":0,\"follower\":69}}\",\"whisper\":0,\"black\":0,\"follower\":69}}\",\"follower\":69}}";
+    
+    json_parser(json_buf, bfans);
 }

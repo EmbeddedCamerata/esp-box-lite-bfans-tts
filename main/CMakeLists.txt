@@ -3,6 +3,7 @@ set(srcs
     wifi_connect.c
     https_req.c
     tts_report.c
+    json_parser.c
     )
 
 set(include_dirs
