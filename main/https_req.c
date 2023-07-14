@@ -23,18 +23,19 @@
 #endif
 
 #include "https_req.h"
+#include "config.h"
 
 /* Constants that aren't configurable in menuconfig */
-#define WEB_SERVER "api.bilibili.com"
-#define WEB_PORT "443"
-#define WEB_URL "https://api.bilibili.com/x/relation/stat?vmid=42602419"
+#define WEB_SERVER  "api.bilibili.com"
+#define WEB_PORT    "443"
+#define WEB_URL     "https://api.bilibili.com/x/relation/stat?vmid="
 
 #define SERVER_URL_MAX_SZ 256
 
-char buf[MAX_REQUEST_BUF_LEN];
+char https_req_buf[MAX_REQUEST_BUF_LEN];
 static const char *TAG = "https req";
 
-static const char HOWSMYSSL_REQUEST[] = "GET " WEB_URL " HTTP/1.1\r\n"
+static const char HOWSMYSSL_REQUEST[] = "GET " WEB_URL BILIBILI_VMID " HTTP/1.1\r\n"
                                         "Host: " WEB_SERVER "\r\n"
                                         "User-Agent: esp-idf/1.0 esp32\r\n"
                                         "\r\n";
@@ -69,7 +70,6 @@ static bool save_client_session = false;
 
 static void https_get_request(esp_tls_cfg_t cfg, const char *WEB_SERVER_URL, const char *REQUEST)
 {
-    // char buf[512];
     int ret, len;
 
     struct esp_tls *tls = esp_tls_conn_http_new(WEB_SERVER_URL, &cfg);
@@ -114,9 +114,9 @@ static void https_get_request(esp_tls_cfg_t cfg, const char *WEB_SERVER_URL, con
 
     do
     {
-        len = sizeof(buf) - 1;
-        bzero(buf, sizeof(buf));
-        ret = esp_tls_conn_read(tls, (char *)buf, len);
+        len = sizeof(https_req_buf) - 1;
+        bzero(https_req_buf, sizeof(https_req_buf));
+        ret = esp_tls_conn_read(tls, (char *)https_req_buf, len);
 
         if (ret == ESP_TLS_ERR_SSL_WANT_WRITE || ret == ESP_TLS_ERR_SSL_WANT_READ)
         {
@@ -140,11 +140,11 @@ static void https_get_request(esp_tls_cfg_t cfg, const char *WEB_SERVER_URL, con
         /* Print response directly to stdout as it is read */
         for (int i = 0; i < len; i++)
         {
-            putchar(buf[i]);
+            putchar(https_req_buf[i]);
         }
         putchar('\n'); // JSON output doesn't have a newline at end
 
-        printf("Here is: %s\n", buf);
+        printf("Here is: %s\n", https_req_buf);
     } while (1);
 
 exit:
