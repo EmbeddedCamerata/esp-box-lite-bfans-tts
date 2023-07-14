@@ -30,7 +30,7 @@ static const char *number_to_chinese[] = {
     "一", "二", "三", "四", "五", "六", "七", "八", "九"};
 
 static void tts_report_cb(void *arg);
-static esp_err_t fans_to_prompt(const char *fans_num_str, char *prompt);
+static esp_err_t followers_to_prompt(const char *followers_num_str, char *prompt);
 
 esp_err_t tts_init()
 {
@@ -81,19 +81,19 @@ esp_err_t tts_init()
 }
 
 /**
- * @brief convert fans number string to chinese prompt.
+ * @brief convert followers number string to chinese prompt.
  *
- * @param   fans_num_str    Fans number string.
+ * @param   followers_num_str    followers number string.
  * @param   prompt          Converted Chinese prompt. 
  * @return
  *  - ESP_OK on success.
  *  - other on failure.
  */
-static esp_err_t fans_to_prompt(const char *fans_num_str, char *prompt)
+static esp_err_t followers_to_prompt(const char *followers_num_str, char *prompt)
 {
-    const char *_fans = "粉丝数";
+    const char *_followers = "粉丝数";
     char number;
-    int num = atoi(fans_num_str);
+    int num = atoi(followers_num_str);
     int digit_cnt = 0;
     int digit, digit_next;
     int i = 0;
@@ -105,13 +105,13 @@ static esp_err_t fans_to_prompt(const char *fans_num_str, char *prompt)
     }
 
     bzero(prompt, sizeof(prompt));
-    strcat(prompt, _fans);
+    strcat(prompt, _followers);
     prompt += strlen(prompt);
 
     digit_cnt = get_digit_count(num);
-    for (; i < strlen(fans_num_str); i++)
+    for (; i < strlen(followers_num_str); i++)
     {
-        number = fans_num_str[i];
+        number = followers_num_str[i];
         digit = atoi(&number);
 
         if (digit == 0)
@@ -119,7 +119,7 @@ static esp_err_t fans_to_prompt(const char *fans_num_str, char *prompt)
             if (num % 1000 > 0)
             {
                 // See the next number whether is zero
-                number = fans_num_str[i + 1];
+                number = followers_num_str[i + 1];
                 digit_next = atoi(&number);
                 if (digit_next > 0)
                 {
@@ -150,17 +150,17 @@ static void tts_report_cb(void *arg)
     char *parsed_num;
     char prompt[64];
 
-    esp_err_t err = json_parse_fans(buf, &parsed_num);
+    esp_err_t err = json_parse_followers(buf, &parsed_num);
     if (err != ESP_OK)
     {
         ESP_LOGE(TAG, "tts report failed!\n");
         return;
     }
 
-    err = fans_to_prompt(parsed_num, prompt);
+    err = followers_to_prompt(parsed_num, prompt);
     if (err != ESP_OK)
     {
-        ESP_LOGE(TAG, "Converted fans string to Chinese prompt failed!\n");
+        ESP_LOGE(TAG, "Converted followers string to Chinese prompt failed!\n");
         return;
     }
 

@@ -5,15 +5,15 @@
 static const char *TAG = "CJson parser";
 
 /**
- * @brief Parse json string, and get the fans string.
+ * @brief Parse json string, and get the followers string.
  *
  * @param   json_buf    Json string.
- * @param   parsed      Pointer of parsed fans string.
+ * @param   parsed      Pointer of parsed followers string.
  * @return
  *  - ESP_OK on success.
  *  - other on failure.
  */
-esp_err_t json_parse_fans(const char *json_buf, char **parsed)
+esp_err_t json_parse_followers(const char *json_buf, char **parsed)
 {
     esp_err_t err = ESP_OK;
     cJSON *cjson_root = NULL;
