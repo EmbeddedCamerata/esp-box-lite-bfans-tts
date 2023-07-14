@@ -70,6 +70,7 @@ static bool save_client_session = false;
 
 static void https_get_request(esp_tls_cfg_t cfg, const char *WEB_SERVER_URL, const char *REQUEST)
 {
+    char buf[512];
     int ret, len;
 
     struct esp_tls *tls = esp_tls_conn_http_new(WEB_SERVER_URL, &cfg);
@@ -114,9 +115,9 @@ static void https_get_request(esp_tls_cfg_t cfg, const char *WEB_SERVER_URL, con
 
     do
     {
-        len = sizeof(https_req_buf) - 1;
-        bzero(https_req_buf, sizeof(https_req_buf));
-        ret = esp_tls_conn_read(tls, (char *)https_req_buf, len);
+        len = sizeof(buf) - 1;
+        bzero(buf, sizeof(buf));
+        ret = esp_tls_conn_read(tls, (char *)buf, len);
 
         if (ret == ESP_TLS_ERR_SSL_WANT_WRITE || ret == ESP_TLS_ERR_SSL_WANT_READ)
         {
@@ -140,11 +141,12 @@ static void https_get_request(esp_tls_cfg_t cfg, const char *WEB_SERVER_URL, con
         /* Print response directly to stdout as it is read */
         for (int i = 0; i < len; i++)
         {
-            putchar(https_req_buf[i]);
+            putchar(buf[i]);
         }
         putchar('\n'); // JSON output doesn't have a newline at end
+        memcpy(https_req_buf, buf, 512);
 
-        printf("Here is: %s\n", https_req_buf);
+        // printf("Here is: %s\n", buf);
     } while (1);
 
 exit:

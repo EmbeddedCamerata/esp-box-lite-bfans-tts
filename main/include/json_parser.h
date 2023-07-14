@@ -3,6 +3,6 @@
 
 #include "esp_err.h"
 
-esp_err_t json_parse_followers(const char *json_buf, char **parsed);
+esp_err_t json_parse_followers(const char *buf, char **parsed);
 
 #endif /* _JSON_PARSER_H_ */

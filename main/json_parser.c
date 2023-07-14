@@ -1,8 +1,9 @@
+#include <string.h>
 #include "esp_err.h"
 #include "esp_log.h"
 #include "cJSON.h"
 
-static const char *TAG = "CJson parser";
+static const char *TAG = "cJSON parser";
 
 /**
  * @brief Parse json string, and get the followers string.
@@ -13,10 +14,19 @@ static const char *TAG = "CJson parser";
  *  - ESP_OK on success.
  *  - other on failure.
  */
-esp_err_t json_parse_followers(const char *json_buf, char **parsed)
+esp_err_t json_parse_followers(const char *buf, char **parsed)
 {
     esp_err_t err = ESP_OK;
+
+    char *json_buf;
     cJSON *cjson_root = NULL;
+
+    json_buf = strchr(buf, '{');
+    if (json_buf == NULL)
+    {
+        ESP_LOGE(TAG, "Couldn't find '{'\n");
+        return ESP_FAIL;
+    }
     
     cjson_root = cJSON_Parse(json_buf);
     if (cjson_root == NULL)
