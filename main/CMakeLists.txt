@@ -1,9 +1,9 @@
 set(srcs
     main.c
-    wifi_connect.c
-    https_req.c
-    tts_report.c
-    json_parser.c
+    src/wifi_connect.c
+    src/https_req.c
+    src/tts_report.c
+    src/json_parser.c
 )
 
 set(include_dirs
