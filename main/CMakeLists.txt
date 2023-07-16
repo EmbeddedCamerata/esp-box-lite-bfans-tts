@@ -4,15 +4,15 @@ set(srcs
     https_req.c
     tts_report.c
     json_parser.c
-    )
+)
 
 set(include_dirs
     include
-    )
+)
 
 idf_component_register(SRCS ${srcs}
-                       INCLUDE_DIRS ${include_dirs}
-                       EMBED_TXTFILES ${PROJECT_DIR}/resources/server_root_cert.pem)
+    INCLUDE_DIRS ${include_dirs}
+    EMBED_TXTFILES ${PROJECT_DIR}/resources/server_root_cert.pem)
 
 add_definitions(-w)
 

@@ -1,6 +1,4 @@
 #include <string.h>
-
-#include "esp_system.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/event_groups.h"
@@ -8,19 +6,15 @@
 #include "esp_wifi.h"
 #include "esp_event.h"
 #include "esp_log.h"
+#include "esp_netif.h"
 
 #include "lwip/err.h"
 #include "lwip/sys.h"
 
-/* The examples use WiFi configuration that you can set via project configuration menu
+#include "config.h"
 
-   If you'd rather not, just change the below entries to strings with
-   the config you want - ie #define EXAMPLE_WIFI_SSID "mywifissid"
-*/
-// #define EXAMPLE_ESP_WIFI_SSID "APGroup"
-// #define EXAMPLE_ESP_WIFI_PASS "asdf1234"
-#define EXAMPLE_ESP_WIFI_SSID "CMCC-i5cg"
-#define EXAMPLE_ESP_WIFI_PASS "f9s9f3tj"
+#define EXAMPLE_ESP_WIFI_SSID WIFI_SSID
+#define EXAMPLE_ESP_WIFI_PASS WIFI_PASSWORD
 #define EXAMPLE_ESP_MAXIMUM_RETRY 3
 
 #if CONFIG_ESP_WIFI_AUTH_OPEN

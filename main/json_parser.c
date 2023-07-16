@@ -14,7 +14,7 @@ static const char *TAG = "cJSON parser";
  *  - ESP_OK on success.
  *  - other on failure.
  */
-esp_err_t json_parse_followers(const char *buf, char **parsed)
+esp_err_t json_parse_followers(const char *buf, char *parsed)
 {
     esp_err_t err = ESP_OK;
 
@@ -52,8 +52,7 @@ esp_err_t json_parse_followers(const char *buf, char **parsed)
         goto exit;
     }
 
-    *parsed = (char *)malloc(64 * sizeof(char));
-    *parsed = cJSON_Print(cjson_follower);
+    parsed = cJSON_Print(cjson_follower);
 
     ESP_LOGD(TAG, "follower: %s\n", parsed);
 

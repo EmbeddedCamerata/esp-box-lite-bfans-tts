@@ -3,6 +3,6 @@
 # project subdirectory.
 #
 
-PROJECT_NAME := demo
+PROJECT_NAME := esp-box-lite-bfans-tts
 
 include $(IDF_PATH)/make/project.mk
