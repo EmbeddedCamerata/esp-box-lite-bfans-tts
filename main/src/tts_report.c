@@ -17,6 +17,7 @@
 /* User lib */
 #include "tts_report.h"
 #include "https_req.h"
+#include "lvgl_display.h"
 
 #define MAX_NUM_LIMIT 9999
 #define MIN_NUM_LIMIT 1
@@ -29,7 +30,6 @@ static const char *unit_to_chinese[] = {
 static const char *number_to_chinese[] = {
     "零", "一", "二", "三", "四", "五", "六", "七", "八", "九"};
 
-static char followers[32];
 static void tts_welcome_report();
 static esp_err_t followers_to_prompt(const char *followers_num_str, char *prompt);
 
@@ -165,15 +165,17 @@ void tts_report_cb(void *arg)
     /* 2. play prompt text */
     button_dev_t *btn = (button_dev_t *)arg;
     char *buf = (char *)btn->cb_user_data;
+    char *followers;
     char prompt[64];
 
-    bzero(followers, sizeof(followers));
-    esp_err_t err = json_parse_followers(buf, followers);
+    esp_err_t err = json_parse_followers(&followers);
     if (err != ESP_OK)
     {
         ESP_LOGE(TAG, "tts report failed!\n");
         return;
     }
+
+    lvgl_display_update(atoi(followers));
 
     err = followers_to_prompt(followers, prompt);
     if (err != ESP_OK)
@@ -181,7 +183,6 @@ void tts_report_cb(void *arg)
         ESP_LOGE(TAG, "converted followers string to Chinese prompt failed!\n");
         return;
     }
-    ESP_LOGI(TAG, "prompt = %s\n", prompt);
 
     err = tts_report(prompt, 1);
     if (err != ESP_OK)
@@ -210,17 +211,4 @@ void tts_welcome_task(void *pvParams)
 {
     tts_welcome_report();
     vTaskDelete(NULL);
-}
-
-void lvgl_show_followers()
-{
-    /* Labels */
-    /*Change the active screen's background color*/
-    lv_obj_set_style_bg_color(lv_scr_act(), lv_color_hex(0x003a57), LV_PART_MAIN);
-
-    /*Create a white label, set its text and align it to the center*/
-    lv_obj_t * label = lv_label_create(lv_scr_act());
-    lv_label_set_text_fmt(label, "Followers: %s", followers);
-    lv_obj_set_style_text_color(lv_scr_act(), lv_palette_main(LV_PALETTE_PINK), LV_PART_MAIN);
-    lv_obj_align(label, LV_ALIGN_CENTER, 0, 0);
 }

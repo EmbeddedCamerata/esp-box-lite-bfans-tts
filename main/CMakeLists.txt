@@ -4,6 +4,7 @@ set(srcs
     src/https_req.c
     src/tts_report.c
     src/json_parser.c
+    src/lvgl_display.c
 )
 
 set(include_dirs

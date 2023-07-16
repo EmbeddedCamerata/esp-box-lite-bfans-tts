@@ -3,6 +3,9 @@
 #include "esp_log.h"
 #include "cJSON.h"
 
+#include "https_req.h"
+
+extern char https_req_buf[MAX_REQUEST_BUF_LEN];
 static const char *TAG = "cJSON parser";
 
 /**
@@ -14,20 +17,20 @@ static const char *TAG = "cJSON parser";
  *  - ESP_OK on success.
  *  - other on failure.
  */
-esp_err_t json_parse_followers(const char *buf, char *parsed)
+esp_err_t json_parse_followers(char **parsed)
 {
     esp_err_t err = ESP_OK;
 
     char *json_buf;
     cJSON *cjson_root = NULL;
 
-    json_buf = strchr(buf, '{');
+    json_buf = strchr(https_req_buf, '{');
     if (json_buf == NULL)
     {
         ESP_LOGE(TAG, "Couldn't find '{'\n");
         return ESP_FAIL;
     }
-    
+
     cjson_root = cJSON_Parse(json_buf);
     if (cjson_root == NULL)
     {
@@ -52,9 +55,8 @@ esp_err_t json_parse_followers(const char *buf, char *parsed)
         goto exit;
     }
 
-    parsed = cJSON_Print(cjson_follower);
-
-    ESP_LOGD(TAG, "follower: %s\n", parsed);
+    *parsed = (char*)malloc(32*sizeof(char));
+    *parsed = cJSON_Print(cjson_follower);
 
 exit:
     cJSON_Delete(cjson_root);

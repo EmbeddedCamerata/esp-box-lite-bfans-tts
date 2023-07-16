@@ -70,7 +70,7 @@ static bool save_client_session = false;
 
 static void https_get_request(esp_tls_cfg_t cfg, const char *WEB_SERVER_URL, const char *REQUEST)
 {
-    char buf[512];
+    char buf[MAX_REQUEST_BUF_LEN];
     int ret, len;
 
     struct esp_tls *tls = esp_tls_conn_http_new(WEB_SERVER_URL, &cfg);
@@ -144,9 +144,7 @@ static void https_get_request(esp_tls_cfg_t cfg, const char *WEB_SERVER_URL, con
             putchar(buf[i]);
         }
         putchar('\n'); // JSON output doesn't have a newline at end
-        memcpy(https_req_buf, buf, 512);
-
-        // printf("Here is: %s\n", buf);
+        memcpy(https_req_buf, buf, MAX_REQUEST_BUF_LEN);
     } while (1);
 
 exit:
