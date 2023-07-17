@@ -55,7 +55,7 @@ esp_err_t json_parse_followers(char **parsed)
         goto exit;
     }
 
-    *parsed = (char*)malloc(32*sizeof(char));
+    *parsed = (char *)malloc(32 * sizeof(char));
     *parsed = cJSON_Print(cjson_follower);
 
 exit:

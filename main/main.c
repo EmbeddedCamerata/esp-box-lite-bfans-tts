@@ -23,7 +23,7 @@ void app_main(void)
     ESP_ERROR_CHECK(bsp_board_init());
     ESP_ERROR_CHECK(bsp_board_power_ctrl(POWER_MODULE_AUDIO, true));
 
-    /* Initialize NVS */ 
+    /* Initialize NVS */
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND)
     {
@@ -32,10 +32,10 @@ void app_main(void)
     }
     ESP_ERROR_CHECK(ret);
 
-    /* Initialize TTS */ 
+    /* Initialize TTS */
     ESP_ERROR_CHECK(tts_init());
 
-    /* Connect to WIFI */ 
+    /* Connect to WIFI */
     wifi_init_sta();
 
     /* Initialize LCD & LVGL */

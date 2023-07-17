@@ -26,9 +26,9 @@
 #include "config.h"
 
 /* Constants that aren't configurable in menuconfig */
-#define WEB_SERVER  "api.bilibili.com"
-#define WEB_PORT    "443"
-#define WEB_URL     "https://api.bilibili.com/x/relation/stat?vmid="
+#define WEB_SERVER "api.bilibili.com"
+#define WEB_PORT "443"
+#define WEB_URL "https://api.bilibili.com/x/relation/stat?vmid="
 
 #define SERVER_URL_MAX_SZ 256
 

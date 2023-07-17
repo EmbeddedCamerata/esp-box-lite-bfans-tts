@@ -35,7 +35,7 @@ static esp_err_t followers_to_prompt(const char *followers_num_str, char *prompt
 
 esp_err_t tts_init()
 {
-    /* 1. create esp tts handle */
+    /* Create esp tts handle */
     // initial voice set from separate voice data partition
     const esp_partition_t *part = esp_partition_find_first(ESP_PARTITION_TYPE_DATA, ESP_PARTITION_SUBTYPE_ANY, "voice_data");
     if (part == NULL)
@@ -143,11 +143,7 @@ esp_err_t tts_report(char *prompt, unsigned int speed)
         do
         {
             short *pcm_data = esp_tts_stream_play(tts_handle, len, speed);
-#ifdef SDCARD_OUTPUT_ENABLE
-            wav_encoder_run(wav_encoder, pcm_data, len[0] * 2);
-#else
             i2s_write(I2S_NUM_0, pcm_data, len[0] * 2, &bytes_write, portMAX_DELAY);
-#endif
         } while (len[0] > 0);
     }
     else
@@ -162,12 +158,10 @@ esp_err_t tts_report(char *prompt, unsigned int speed)
 
 void tts_report_cb(void *arg)
 {
-    /* 2. play prompt text */
-    button_dev_t *btn = (button_dev_t *)arg;
-    char *buf = (char *)btn->cb_user_data;
     char *followers;
     char prompt[64];
 
+    /* Parse the followers number(string) */
     esp_err_t err = json_parse_followers(&followers);
     if (err != ESP_OK)
     {
@@ -175,8 +169,10 @@ void tts_report_cb(void *arg)
         return;
     }
 
+    /* Update the followers number on the screen */
     lvgl_display_update(atoi(followers));
 
+    /* Convert the string to Chinese prompt */
     err = followers_to_prompt(followers, prompt);
     if (err != ESP_OK)
     {
@@ -184,6 +180,7 @@ void tts_report_cb(void *arg)
         return;
     }
 
+    /* Play the prompt at speed=1 */
     err = tts_report(prompt, 1);
     if (err != ESP_OK)
     {
